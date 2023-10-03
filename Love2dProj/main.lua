@@ -14,24 +14,24 @@ function love.load()
     thirdPath = ((1.0/5.0 * height ) * 3) + 42
     pastThirdPath = height - ((1.0/5.0 * height ) + (1.0/5.0 * height / 2 ) )
     chickenMovement = (1.0/5.0 * height) + 10
-
+    carX = width
+    carY = firstPath
+    carSpeed = 900
     
-    myTimer = newTimer(6 , car(dt))
+    --myTimer = newTimer(6 , car(dt))
 
 end
 
-carX = width
-carY = firstPath
-
 function love.update(dt)
     love.keypressed(key)
-    if not myTimer.isExpired() then myTimer.update(dt) end
+    carX = carX - carSpeed * dt
+    --if not myTimer.isExpired() then myTimer.update(dt) end
 end
 
 function love.draw()
     love.graphics.draw(road, 0, 0, 0, 1, 1)
     love.graphics.draw(chicken, chickenX, chickenY, 0, 2, 2)
-    car = love.graphics.rectangle( "fill", carX, carY, 2, 2)
+    love.graphics.rectangle( "fill", carX, carY, 50, 50)
 end
 -- Checks if key is pressed
 function love.keypressed(key)
@@ -67,10 +67,4 @@ function newTimer(time,callback)
     end
 
     return timer
-end
-
-function car(dt)    
-    carX = carX - 10
-
-
 end
