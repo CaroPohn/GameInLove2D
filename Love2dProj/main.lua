@@ -1,9 +1,9 @@
 function love.load()
-    x = 100
-    y = 300
+    x = 280
+    y = 144
 
     sheep = love.graphics.newImage("sheep.png")
-    love.window.setMode(1080, 720)
+    love.window.setMode(1280, 720)
 end
 
 function love.update(dt)
@@ -15,19 +15,13 @@ function love.draw()
 end
 
 function input(dt)
-    if love.keyboard.isDown("right") then
-        x = x + 100 * dt
+    if love.keyboard.isDown("w") then
+        y = y + 144
     end
-    
-    if love.keyboard.isDown("left") then
-        x = x - 100 * dt
+    if y > 504 then
+        y = 216
     end
-
-    if love.keyboard.isDown("up") then
-        y = y - 100 * dt
-    end
-    
-    if love.keyboard.isDown("down") then
-        y = y + 100 * dt
+    if y < 216 then
+        y = 216
     end
 end
