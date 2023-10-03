@@ -3,6 +3,7 @@ function love.load()
     y = 300
 
     sheep = love.graphics.newImage("sheep.png")
+    love.window.setMode(1080, 720)
 end
 
 function love.update(dt)
