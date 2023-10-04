@@ -70,7 +70,7 @@ function love.load()
     roadAnimation = anim8.newAnimation(roadGrid("1-13", 1), 0.1 ) 
 
     deathScreenGrid = anim8.newGrid(1150, 720, deathScreen:getWidth(), deathScreen:getHeight())
-    deathScreenAnim = anim8.newAnimation(deathScreenGrid("1-16", 1), 0.1 )
+    deathScreenAnim = anim8.newAnimation(deathScreenGrid("1-13", 1), 0.1 )
 
 end
 
