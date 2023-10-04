@@ -5,51 +5,53 @@ function love.load()
     chickenX = 150
     chickenY = 72
 
+    -- Semilla para el random
     math.randomseed(os.time())
     
-    -- chicken = love.graphics.newImage("idleChicken.png")
     chicken = love.graphics.newImage("pollito.png")
-    road = love.graphics.newImage("road2.png")
+    road = love.graphics.newImage("road2less.png")
+
+    -- Setear la ventana
     love.window.setMode(1150, 720)
     width = 1150
     height = 720
     
-    -- paths of the road
+    -- Paths of the road
     firstPath = ((1.0/5.0 * height ) + (1.0/5.0 * height / 2 ) ) - 50;
     secondPath = height / 2 - 60
     thirdPath = ((1.0/5.0 * height ) * 3) + 42
     pastThirdPath = height - ((1.0/5.0 * height ) + (1.0/5.0 * height / 2 ) )
     chickenMovement = (1.0/5.0 * height) + 10
-    firstCarSpeed = 700
-    secondCarSpeed = 900
-    thirdCarSpeed = 400
-    firstCarTime = 0
-    secondCarTime = 0
-    thirdCarTime = 0
-    
-    -- first car variables
+
+    -- First car variables
     firstCarX = width
-    firstCarY = firstPath
+    firstCarY = firstPath - 15
     firstCarRandPos = 1
     firstCarTexture = love.graphics.newImage("ranita1.png")
     firstCarGrid = anim8.newGrid(170, 140, firstCarTexture:getWidth(), firstCarTexture:getHeight())
     firstCarAnimation = anim8.newAnimation(firstCarGrid("1-8", 1), 0.1 ) 
-    
-    -- second car variables
+    firstCarSpeed = 700
+    firstCarTime = 0
+
+    -- Second car variables
     secondCarX = width
     secondCarY = firstPath + height
     secondCarRandPos = 1
     secondCarTexture = love.graphics.newImage("ranita2.png")
     secondCarGrid = anim8.newGrid(170, 140, secondCarTexture:getWidth(), secondCarTexture:getHeight())
     secondCarAnimation = anim8.newAnimation(secondCarGrid("1-8", 1), 0.1 ) 
+    secondCarSpeed = 900
+    secondCarTime = 0
 
-    -- third car variables
+    -- Third car variables
     thirdCarX = width
-    thirdCarY = thirdPath
+    thirdCarY = thirdPath - 15
     thirdCarRandPos = 1
     thirdCarTexture = love.graphics.newImage("ranita3.png")
     thirdCarGrid = anim8.newGrid(170, 140, thirdCarTexture:getWidth(), thirdCarTexture:getHeight())
     thirdCarAnimation = anim8.newAnimation(thirdCarGrid("1-8", 1), 0.1 ) 
+    thirdCarSpeed = 400
+    thirdCarTime = 0
 
     chickenGrid = anim8.newGrid(50, 40, chicken:getWidth(), chicken:getHeight())
     chickenAnimation = anim8.newAnimation(chickenGrid("1-5", 1), 0.1 )
@@ -57,7 +59,7 @@ function love.load()
     testColliding = false
 
     roadGrid = anim8.newGrid(1150, 720, road:getWidth(), road:getHeight())
-    roadAnimation = anim8.newAnimation(roadGrid("1-26", 1), 0.1 ) 
+    roadAnimation = anim8.newAnimation(roadGrid("1-13", 1), 0.1 ) 
 
 end
 
@@ -67,9 +69,9 @@ function love.update(dt)
     firstCarX = firstCarX - firstCarSpeed * dt
     secondCarX = secondCarX - secondCarSpeed * dt
     thirdCarX = thirdCarX - thirdCarSpeed * dt
-    firstCarTime = firstCarTime + love.timer.getDelta()
-    secondCarTime = secondCarTime + love.timer.getDelta()
-    thirdCarTime = thirdCarTime + love.timer.getDelta()
+    firstCarTime = firstCarTime + love.timer.getDelta() --?
+    secondCarTime = secondCarTime + love.timer.getDelta() --?
+    thirdCarTime = thirdCarTime + love.timer.getDelta() --?
 
     if firstCarTime > 2 then
         firstCarRandPos = math.random(3)
@@ -132,7 +134,7 @@ end
 
 function love.draw()
     
-    --love.graphics.draw(road, 0, 0, 0, 1, 1)
+    -- Animations
     roadAnimation:draw(road, 0, 0)
     chickenAnimation:draw(chicken, chickenX, chickenY, nil, 2.5)
     firstCarAnimation:draw(firstCarTexture, firstCarX, firstCarY)
@@ -159,10 +161,6 @@ function love.keypressed(key)
     if chickenY < firstPath then
         chickenY = thirdPath
     end
-end
-
-function rectangleDrawing() 
-    love.graphics.rectangle("fill", carX, carY, 50, 50)
 end
 
 function resetFirstCar()
