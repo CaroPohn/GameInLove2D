@@ -4,7 +4,7 @@ function love.load()
     
     chickenX = 150
     chickenY = 72
-    
+
     math.randomseed(os.time())
     
     -- chicken = love.graphics.newImage("idleChicken.png")
@@ -16,11 +16,13 @@ function love.load()
     
     -- paths of the road
     firstPath = ((1.0/5.0 * height ) + (1.0/5.0 * height / 2 ) ) - 50;
-    secondPath = height / 2 + 15
+    secondPath = height / 2 - 60
     thirdPath = ((1.0/5.0 * height ) * 3) + 42
     pastThirdPath = height - ((1.0/5.0 * height ) + (1.0/5.0 * height / 2 ) )
     chickenMovement = (1.0/5.0 * height) + 10
-    carSpeed = 800
+    firstCarSpeed = 700
+    secondCarSpeed = 900
+    thirdCarSpeed = 400
     firstCarTime = 0
     secondCarTime = 0
     thirdCarTime = 0
@@ -28,20 +30,14 @@ function love.load()
     -- first car variables
     firstCarX = width
     firstCarY = firstPath
-    secondCarX = width
-    secondCarY = secondPath
-    thirdCarX = width
-    thirdCarY = thirdPath
     firstCarRandPos = 1
-    secondCarXCarRandPos = 1
-    thirdCarRandPos = 1
     firstCarTexture = love.graphics.newImage("ranita1.png")
     firstCarGrid = anim8.newGrid(170, 140, firstCarTexture:getWidth(), firstCarTexture:getHeight())
     firstCarAnimation = anim8.newAnimation(firstCarGrid("1-8", 1), 0.1 ) 
     
     -- second car variables
     secondCarX = width
-    secondCarY = firstPath
+    secondCarY = firstPath + height
     secondCarRandPos = 1
     secondCarTexture = love.graphics.newImage("ranita2.png")
     secondCarGrid = anim8.newGrid(170, 140, secondCarTexture:getWidth(), secondCarTexture:getHeight())
@@ -49,7 +45,7 @@ function love.load()
 
     -- third car variables
     thirdCarX = width
-    thirdCarY = firstPath
+    thirdCarY = thirdPath
     thirdCarRandPos = 1
     thirdCarTexture = love.graphics.newImage("ranita3.png")
     thirdCarGrid = anim8.newGrid(170, 140, thirdCarTexture:getWidth(), thirdCarTexture:getHeight())
@@ -58,14 +54,16 @@ function love.load()
     chickenGrid = anim8.newGrid(50, 40, chicken:getWidth(), chicken:getHeight())
     chickenAnimation = anim8.newAnimation(chickenGrid("1-5", 1), 0.1 )
 
+    sexo = false
+
 end
 
 function love.update(dt)
     love.keypressed(key)
     
-    firstCarX = firstCarX - carSpeed * dt
-    secondCarX = secondCarX - carSpeed * dt
-    thirdCarX = thirdCarX - carSpeed * dt
+    firstCarX = firstCarX - firstCarSpeed * dt
+    secondCarX = secondCarX - secondCarSpeed * dt
+    thirdCarX = thirdCarX - thirdCarSpeed * dt
     firstCarTime = firstCarTime + love.timer.getDelta()
     secondCarTime = secondCarTime + love.timer.getDelta()
     thirdCarTime = thirdCarTime + love.timer.getDelta()
@@ -77,7 +75,7 @@ function love.update(dt)
             firstCarY = firstPath - 15
 
         elseif firstCarRandPos == 2 then
-            firstCarY = firstPath + chickenMovement - 15
+            firstCarY = secondPath
 
         elseif firstCarRandPos == 3 then
             firstCarY = thirdPath - 15
@@ -93,7 +91,7 @@ function love.update(dt)
             secondCarY = firstPath - 15
 
         elseif secondCarXCarRandPos == 2 then
-            secondCarY = firstPath + chickenMovement - 15
+            secondCarY = secondPath
 
         elseif secondCarXCarRandPos == 3 then
             secondCarY = thirdPath - 15
@@ -109,7 +107,7 @@ function love.update(dt)
             thirdCarY = firstPath - 15
 
         elseif thirdCarRandPos == 2 then
-            thirdCarY = firstPath + chickenMovement - 15
+            thirdCarY = secondPath
 
         elseif thirdCarRandPos == 3 then
             thirdCarY = thirdPath - 15
@@ -122,16 +120,22 @@ function love.update(dt)
     firstCarAnimation:update(dt)
     secondCarAnimation:update(dt)
     thirdCarAnimation:update(dt)
+
+    collitionWithFirstCar()
+    collitionWithSecondCar()
+    collitionWithThirdCar()
 end
 
 function love.draw()
+    
     love.graphics.draw(road, 0, 0, 0, 1, 1)
     chickenAnimation:draw(chicken, chickenX, chickenY, nil, 2)
     firstCarAnimation:draw(firstCarTexture, firstCarX, firstCarY)
-    --love.graphics.rectangle("fill", secondCarX, secondCarY, 50, 50)
-    --love.graphics.rectangle("fill", thirdCarX, thirdCarY, 50, 50)
     secondCarAnimation:draw(secondCarTexture, secondCarX, secondCarY)
     thirdCarAnimation:draw(thirdCarTexture, thirdCarX, thirdCarY)
+    if sexo == true then 
+        love.graphics.rectangle("fill", width / 2, height / 2, 100, 100)
+    end
 end
 
 -- Checks if key is pressed
@@ -168,5 +172,23 @@ end
 function resetThirdCar()
     thirdCarTime = 0
     thirdCarX = width
+end
+
+function collitionWithFirstCar()
+    if chickenX + 50 >= firstCarX and chickenX <= firstCarX + 170 and chickenY + 40 >= firstCarY and chickenY <= firstCarY + 140 then 
+        sexo = true
+    end
+end
+
+function collitionWithSecondCar()
+    if chickenX + 50 >= secondCarX and chickenX <= secondCarX + 170 and chickenY + 40 >= secondCarY and chickenY <= secondCarY + 140 then 
+        sexo = true
+    end
+end
+
+function collitionWithThirdCar()
+    if chickenX + 50 >= thirdCarX and chickenX <= thirdCarX + 170 and chickenY + 40 >= thirdCarY and chickenY <= thirdCarY + 140 then 
+        sexo = true
+    end
 end
 
