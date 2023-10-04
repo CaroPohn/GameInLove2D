@@ -19,7 +19,8 @@ function love.load()
     carX = width
     carY = firstPath
     carSpeed = 900
-
+    time = 0
+    
     chickenGrid = anim8.newGrid(50, 40, chicken:getWidth(), chicken:getHeight())
     chickenAnimation = anim8.newAnimation(chickenGrid("1-5", 1), 0.1 )
     
@@ -30,15 +31,17 @@ end
 function love.update(dt)
     love.keypressed(key)
     carX = carX - carSpeed * dt
-
+    time = time + love.timer.getDelta()
     chickenAnimation:update(dt)
+    if time > 6 then 
+        reset()
+    end
     --if not myTimer.isExpired() then myTimer.update(dt) end
 end
 
 function love.draw()
     love.graphics.draw(road, 0, 0, 0, 1, 1)
-    --love.graphics.draw(chicken, chickenX, chickenY, 0, 2, 2)
-    love.graphics.rectangle( "fill", carX, carY, 50, 50)
+    rectangleDrawing()
     chickenAnimation:draw(chicken, chickenX, chickenY, nil, 2)
 end
 
@@ -59,22 +62,13 @@ function love.keypressed(key)
     end
 end
 
--- Timer
-function newTimer(time,callback)
-    local expired = false
-    local timer = {}
-    
-    function timer.update(dt)
-         if time < 0 then
-               expired = true
-               callback()
-         end
-         time = time - dt         
-    end
-
-    function timer.isExpired()
-        return expired
-    end
-
-    return timer
+function rectangleDrawing() 
+    love.graphics.rectangle( "fill", carX, carY, 50, 50)
 end
+
+function reset()
+    time = 0
+    carX = width
+end
+
+
