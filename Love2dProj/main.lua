@@ -1,7 +1,7 @@
 function love.load()
     anim8 = require "anim8"
     love.graphics.setDefaultFilter("nearest", "nearest")
-    
+
     chickenX = 150
     chickenY = 72
 
@@ -9,7 +9,7 @@ function love.load()
     
     -- chicken = love.graphics.newImage("idleChicken.png")
     chicken = love.graphics.newImage("pollito.png")
-    road = love.graphics.newImage("road.png")
+    road = love.graphics.newImage("road2.png")
     love.window.setMode(1150, 720)
     width = 1150
     height = 720
@@ -54,7 +54,10 @@ function love.load()
     chickenGrid = anim8.newGrid(50, 40, chicken:getWidth(), chicken:getHeight())
     chickenAnimation = anim8.newAnimation(chickenGrid("1-5", 1), 0.1 )
 
-    sexo = false
+    testColliding = false
+
+    roadGrid = anim8.newGrid(1150, 720, road:getWidth(), road:getHeight())
+    roadAnimation = anim8.newAnimation(roadGrid("1-26", 1), 0.1 ) 
 
 end
 
@@ -116,6 +119,7 @@ function love.update(dt)
         resetThirdCar()
     end
 
+    roadAnimation:update(dt)
     chickenAnimation:update(dt)
     firstCarAnimation:update(dt)
     secondCarAnimation:update(dt)
@@ -128,12 +132,14 @@ end
 
 function love.draw()
     
-    love.graphics.draw(road, 0, 0, 0, 1, 1)
-    chickenAnimation:draw(chicken, chickenX, chickenY, nil, 2)
+    --love.graphics.draw(road, 0, 0, 0, 1, 1)
+    roadAnimation:draw(road, 0, 0)
+    chickenAnimation:draw(chicken, chickenX, chickenY, nil, 2.5)
     firstCarAnimation:draw(firstCarTexture, firstCarX, firstCarY)
     secondCarAnimation:draw(secondCarTexture, secondCarX, secondCarY)
     thirdCarAnimation:draw(thirdCarTexture, thirdCarX, thirdCarY)
-    if sexo == true then 
+
+    if testColliding == true then 
         love.graphics.rectangle("fill", width / 2, height / 2, 100, 100)
     end
 end
@@ -176,19 +182,19 @@ end
 
 function collitionWithFirstCar()
     if chickenX + 50 >= firstCarX and chickenX <= firstCarX + 170 and chickenY + 40 >= firstCarY and chickenY <= firstCarY + 140 then 
-        sexo = true
+        testColliding = true
     end
 end
 
 function collitionWithSecondCar()
     if chickenX + 50 >= secondCarX and chickenX <= secondCarX + 170 and chickenY + 40 >= secondCarY and chickenY <= secondCarY + 140 then 
-        sexo = true
+        testColliding = true
     end
 end
 
 function collitionWithThirdCar()
     if chickenX + 50 >= thirdCarX and chickenX <= thirdCarX + 170 and chickenY + 40 >= thirdCarY and chickenY <= thirdCarY + 140 then 
-        sexo = true
+        testColliding = true
     end
 end
 
