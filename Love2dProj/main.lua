@@ -5,26 +5,29 @@ function love.load()
     chickenX = 150
     chickenY = 72
 
+    winTimer = 0
+
     -- Semilla para el random
     math.randomseed(os.time())
     
     chicken = love.graphics.newImage("pollito.png")
     road = love.graphics.newImage("road2less.png")
+    font = love.graphics.newFont("Monoton-Regular.ttf")
 
     -- Setear la ventana
     love.window.setMode(1150, 720)
-    width = 1150
-    height = 720
+    screenWidth = 1150
+    screenHeight = 720
     
     -- Paths of the road
-    firstPath = ((1.0/5.0 * height ) + (1.0/5.0 * height / 2 ) ) - 50;
-    secondPath = height / 2 - 60
-    thirdPath = ((1.0/5.0 * height ) * 3) + 42
-    pastThirdPath = height - ((1.0/5.0 * height ) + (1.0/5.0 * height / 2 ) )
-    chickenMovement = (1.0/5.0 * height) + 10
+    firstPath = ((1.0/5.0 * screenHeight ) + (1.0/5.0 * screenHeight / 2 ) ) - 50;
+    secondPath = screenHeight / 2 - 60
+    thirdPath = ((1.0/5.0 * screenHeight ) * 3) + 42
+    pastThirdPath = screenHeight - ((1.0/5.0 * screenHeight ) + (1.0/5.0 * screenHeight / 2 ) )
+    chickenMovement = (1.0/5.0 * screenHeight) + 10
 
     -- First car variables
-    firstCarX = width
+    firstCarX = screenWidth
     firstCarY = firstPath - 15
     firstCarRandPos = 1
     firstCarTexture = love.graphics.newImage("ranita1.png")
@@ -34,8 +37,8 @@ function love.load()
     firstCarTime = 0
 
     -- Second car variables
-    secondCarX = width
-    secondCarY = firstPath + height
+    secondCarX = screenWidth
+    secondCarY = firstPath + screenHeight
     secondCarRandPos = 1
     secondCarTexture = love.graphics.newImage("ranita2.png")
     secondCarGrid = anim8.newGrid(170, 140, secondCarTexture:getWidth(), secondCarTexture:getHeight())
@@ -44,7 +47,7 @@ function love.load()
     secondCarTime = 0
 
     -- Third car variables
-    thirdCarX = width
+    thirdCarX = screenWidth
     thirdCarY = thirdPath - 15
     thirdCarRandPos = 1
     thirdCarTexture = love.graphics.newImage("ranita3.png")
@@ -65,25 +68,28 @@ end
 
 function love.update(dt)
     love.keypressed(key)
+
+    pathCorrection = 15
     
     firstCarX = firstCarX - firstCarSpeed * dt
     secondCarX = secondCarX - secondCarSpeed * dt
     thirdCarX = thirdCarX - thirdCarSpeed * dt
-    firstCarTime = firstCarTime + love.timer.getDelta() --?
-    secondCarTime = secondCarTime + love.timer.getDelta() --?
-    thirdCarTime = thirdCarTime + love.timer.getDelta() --?
+    firstCarTime = firstCarTime + love.timer.getDelta() 
+    secondCarTime = secondCarTime + love.timer.getDelta() 
+    thirdCarTime = thirdCarTime + love.timer.getDelta() 
+    winTimer = winTimer + love.timer.getDelta()
 
     if firstCarTime > 2 then
         firstCarRandPos = math.random(3)
 
         if firstCarRandPos == 1 then
-            firstCarY = firstPath - 15
+            firstCarY = firstPath - pathCorrection
 
         elseif firstCarRandPos == 2 then
             firstCarY = secondPath
 
         elseif firstCarRandPos == 3 then
-            firstCarY = thirdPath - 15
+            firstCarY = thirdPath - pathCorrection
 
         end   
         resetFirstCar()
@@ -93,13 +99,13 @@ function love.update(dt)
         secondCarXCarRandPos = math.random(3)
 
         if secondCarXCarRandPos == 1 then
-            secondCarY = firstPath - 15
+            secondCarY = firstPath - pathCorrection
 
         elseif secondCarXCarRandPos == 2 then
             secondCarY = secondPath
 
         elseif secondCarXCarRandPos == 3 then
-            secondCarY = thirdPath - 15
+            secondCarY = thirdPath - pathCorrection
         end
 
         resetSecondCar()
@@ -109,13 +115,13 @@ function love.update(dt)
         thirdCarRandPos = math.random(3)
 
         if thirdCarRandPos == 1 then
-            thirdCarY = firstPath - 15
+            thirdCarY = firstPath - pathCorrection
 
         elseif thirdCarRandPos == 2 then
             thirdCarY = secondPath
 
         elseif thirdCarRandPos == 3 then
-            thirdCarY = thirdPath - 15
+            thirdCarY = thirdPath - pathCorrection
         end
 
         resetThirdCar()
@@ -130,6 +136,7 @@ function love.update(dt)
     collitionWithFirstCar()
     collitionWithSecondCar()
     collitionWithThirdCar()
+ 
 end
 
 function love.draw()
@@ -142,8 +149,10 @@ function love.draw()
     thirdCarAnimation:draw(thirdCarTexture, thirdCarX, thirdCarY)
 
     if testColliding == true then 
-        love.graphics.rectangle("fill", width / 2, height / 2, 100, 100)
+        love.graphics.rectangle("fill", screenWidth / 2, screenHeight / 2, 100, 100)
     end
+
+    winCondition()
 end
 
 -- Checks if key is pressed
@@ -165,34 +174,40 @@ end
 
 function resetFirstCar()
     firstCarTime = 0
-    firstCarX = width
+    firstCarX = screenWidth
 end
 
 function resetSecondCar()
     secondCarTime = 0
-    secondCarX = width
+    secondCarX = screenWidth
 end
 
 function resetThirdCar()
     thirdCarTime = 0
-    thirdCarX = width
+    thirdCarX = screenWidth
 end
 
 function collitionWithFirstCar()
-    if chickenX + 50 >= firstCarX and chickenX <= firstCarX + 170 and chickenY + 40 >= firstCarY and chickenY <= firstCarY + 140 then 
+    if chickenX + 50 >= firstCarX + pathCorrection and chickenX <= firstCarX + 140 and chickenY + 40 >= firstCarY and chickenY <= firstCarY + 140 then 
         testColliding = true
     end
 end
 
 function collitionWithSecondCar()
-    if chickenX + 50 >= secondCarX and chickenX <= secondCarX + 170 and chickenY + 40 >= secondCarY and chickenY <= secondCarY + 140 then 
+    if chickenX + 50 >= secondCarX + pathCorrection and chickenX <= secondCarX + 140 and chickenY + 40 >= secondCarY and chickenY <= secondCarY + 140 then 
         testColliding = true
     end
 end
 
 function collitionWithThirdCar()
-    if chickenX + 50 >= thirdCarX and chickenX <= thirdCarX + 170 and chickenY + 40 >= thirdCarY and chickenY <= thirdCarY + 140 then 
+    if chickenX + 50 >= thirdCarX + pathCorrection and chickenX <= thirdCarX + 140 and chickenY + 40 >= thirdCarY and chickenY <= thirdCarY + 140 then 
         testColliding = true
+    end
+end
+
+function winCondition()
+    if winTimer > 60 then 
+        love.graphics.rectangle("fill", screenWidth / 2, screenHeight / 2, 100, 100)
     end
 end
 
