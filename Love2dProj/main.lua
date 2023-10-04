@@ -5,14 +5,14 @@ function love.load()
     chickenX = 150
     chickenY = 72
 
-    winTimer = 0
+    scoreTimer = 0
+    score = 0
 
     -- Semilla para el random
     math.randomseed(os.time())
     
     chicken = love.graphics.newImage("pollito.png")
     road = love.graphics.newImage("road2less.png")
-    font = love.graphics.newFont("Monoton-Regular.ttf")
 
     -- Setear la ventana
     love.window.setMode(1150, 720)
@@ -77,7 +77,7 @@ function love.update(dt)
     firstCarTime = firstCarTime + love.timer.getDelta() 
     secondCarTime = secondCarTime + love.timer.getDelta() 
     thirdCarTime = thirdCarTime + love.timer.getDelta() 
-    winTimer = winTimer + love.timer.getDelta()
+    scoreTimer = scoreTimer + love.timer.getDelta()
 
     if firstCarTime > 2 then
         firstCarRandPos = math.random(3)
@@ -137,6 +137,7 @@ function love.update(dt)
     collitionWithSecondCar()
     collitionWithThirdCar()
  
+    scoreCounter()
 end
 
 function love.draw()
@@ -151,6 +152,8 @@ function love.draw()
     if testColliding == true then 
         love.graphics.rectangle("fill", screenWidth / 2, screenHeight / 2, 100, 100)
     end
+
+    love.graphics.print(score, 25, 25)
 
     winCondition()
 end
@@ -205,9 +208,15 @@ function collitionWithThirdCar()
     end
 end
 
-function winCondition()
-    if winTimer > 60 then 
-        love.graphics.rectangle("fill", screenWidth / 2, screenHeight / 2, 100, 100)
-    end
+function scoreCounter()
+    if scoreTimer > 2 then 
+        score = score + 10
+        scoreTimer = 0
+    end   
 end
 
+function winCondition()
+    if score > 750 then
+        love.graphics.rectangle("fill", screenWidth / 3, screenHeight / 3, 100, 100)
+    end
+end
