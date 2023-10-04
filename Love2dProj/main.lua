@@ -7,7 +7,7 @@ function love.load()
     
     math.randomseed(os.time())
     
-    --chicken = love.graphics.newImage("idleChicken.png")
+    -- chicken = love.graphics.newImage("idleChicken.png")
     chicken = love.graphics.newImage("pollito.png")
     road = love.graphics.newImage("road.png")
     love.window.setMode(1150, 720)
@@ -25,7 +25,7 @@ function love.load()
     secondCarTime = 0
     thirdCarTime = 0
     
-    --first car variables
+    -- first car variables
     firstCarX = width
     firstCarY = firstPath
     secondCarX = width
@@ -39,7 +39,22 @@ function love.load()
     firstCarGrid = anim8.newGrid(170, 140, firstCarTexture:getWidth(), firstCarTexture:getHeight())
     firstCarAnimation = anim8.newAnimation(firstCarGrid("1-8", 1), 0.1 ) 
     
-    
+    -- second car variables
+    secondCarX = width
+    secondCarY = firstPath
+    secondCarRandPos = 1
+    secondCarTexture = love.graphics.newImage("ranita2.png")
+    secondCarGrid = anim8.newGrid(170, 140, secondCarTexture:getWidth(), secondCarTexture:getHeight())
+    secondCarAnimation = anim8.newAnimation(secondCarGrid("1-8", 1), 0.1 ) 
+
+    -- third car variables
+    thirdCarX = width
+    thirdCarY = firstPath
+    thirdCarRandPos = 1
+    thirdCarTexture = love.graphics.newImage("ranita3.png")
+    thirdCarGrid = anim8.newGrid(170, 140, thirdCarTexture:getWidth(), thirdCarTexture:getHeight())
+    thirdCarAnimation = anim8.newAnimation(thirdCarGrid("1-8", 1), 0.1 ) 
+
     chickenGrid = anim8.newGrid(50, 40, chicken:getWidth(), chicken:getHeight())
     chickenAnimation = anim8.newAnimation(chickenGrid("1-5", 1), 0.1 )
 
@@ -105,15 +120,18 @@ function love.update(dt)
 
     chickenAnimation:update(dt)
     firstCarAnimation:update(dt)
-    --if not myTimer.isExpired() then myTimer.update(dt) end
+    secondCarAnimation:update(dt)
+    thirdCarAnimation:update(dt)
 end
 
 function love.draw()
     love.graphics.draw(road, 0, 0, 0, 1, 1)
     chickenAnimation:draw(chicken, chickenX, chickenY, nil, 2)
     firstCarAnimation:draw(firstCarTexture, firstCarX, firstCarY)
-    love.graphics.rectangle("fill", secondCarX, secondCarY, 50, 50)
-    love.graphics.rectangle("fill", thirdCarX, thirdCarY, 50, 50)
+    --love.graphics.rectangle("fill", secondCarX, secondCarY, 50, 50)
+    --love.graphics.rectangle("fill", thirdCarX, thirdCarY, 50, 50)
+    secondCarAnimation:draw(secondCarTexture, secondCarX, secondCarY)
+    thirdCarAnimation:draw(thirdCarTexture, thirdCarX, thirdCarY)
 end
 
 -- Checks if key is pressed
