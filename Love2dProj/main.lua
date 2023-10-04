@@ -8,6 +8,10 @@ function love.load()
     scoreTimer = 0
     score = 0
 
+    isGameRunning = true
+    loseGame = false
+    winGame = false
+
     -- Semilla para el random
     math.randomseed(os.time())
     
@@ -136,13 +140,14 @@ function love.update(dt)
     firstCarAnimation:update(dt)
     secondCarAnimation:update(dt)
     thirdCarAnimation:update(dt)
-    deathScreenAnim:update(dt)
-
+    
     collitionWithFirstCar()
     collitionWithSecondCar()
     collitionWithThirdCar()
- 
+
     scoreCounter()
+ 
+    deathScreenAnim:update(dt)
 end
 
 function love.draw()
