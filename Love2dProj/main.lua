@@ -13,6 +13,7 @@ function love.load()
     
     chicken = love.graphics.newImage("pollito.png")
     road = love.graphics.newImage("road2less.png")
+    deathScreen = love.graphics.newImage("deathanimcar2.png")
 
     -- Setear la ventana
     love.window.setMode(1150, 720)
@@ -63,6 +64,9 @@ function love.load()
 
     roadGrid = anim8.newGrid(1150, 720, road:getWidth(), road:getHeight())
     roadAnimation = anim8.newAnimation(roadGrid("1-13", 1), 0.1 ) 
+
+    deathScreenGrid = anim8.newGrid(1150, 720, deathScreen:getWidth(), deathScreen:getHeight())
+    deathScreenAnim = anim8.newAnimation(deathScreenGrid("1-22", 1), 0.1 )
 
 end
 
@@ -132,6 +136,7 @@ function love.update(dt)
     firstCarAnimation:update(dt)
     secondCarAnimation:update(dt)
     thirdCarAnimation:update(dt)
+    deathScreenAnim:update(dt)
 
     collitionWithFirstCar()
     collitionWithSecondCar()
@@ -150,7 +155,7 @@ function love.draw()
     thirdCarAnimation:draw(thirdCarTexture, thirdCarX, thirdCarY)
 
     if testColliding == true then 
-        love.graphics.rectangle("fill", screenWidth / 2, screenHeight / 2, 100, 100)
+        deathScreenAnim:draw(deathScreen, 0, 0)
     end
 
     love.graphics.print(score, 25, 25)
