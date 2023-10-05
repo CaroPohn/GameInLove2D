@@ -64,7 +64,7 @@ function love.load()
     chickenGrid = anim8.newGrid(50, 40, chicken:getWidth(), chicken:getHeight())
     chickenAnimation = anim8.newAnimation(chickenGrid("1-5", 1), 0.1 )
 
-    testColliding = false
+    isColliding = false
 
     roadGrid = anim8.newGrid(1150, 720, road:getWidth(), road:getHeight())
     roadAnimation = anim8.newAnimation(roadGrid("1-13", 1), 0.1 ) 
@@ -97,7 +97,7 @@ function love.update(dt)
             firstCarY = secondPath
 
         elseif firstCarRandPos == 3 then
-            firstCarY = thirdPath - pathCorrection
+        firstCarY = thirdPath - pathCorrection
 
         end   
         resetFirstCar()
@@ -140,18 +140,19 @@ function love.update(dt)
     firstCarAnimation:update(dt)
     secondCarAnimation:update(dt)
     thirdCarAnimation:update(dt)
-    
+        
     collitionWithFirstCar()
     collitionWithSecondCar()
     collitionWithThirdCar()
 
     scoreCounter()
- 
-    deathScreenAnim:update(dt)
+   
+    if loseGame == true then
+        deathScreenAnim:update(dt)
+    end
 end
 
 function love.draw()
-    
     -- Animations
     roadAnimation:draw(road, 0, 0)
     chickenAnimation:draw(chicken, chickenX, chickenY, nil, 2.5)
@@ -159,7 +160,7 @@ function love.draw()
     secondCarAnimation:draw(secondCarTexture, secondCarX, secondCarY)
     thirdCarAnimation:draw(thirdCarTexture, thirdCarX, thirdCarY)
 
-    if testColliding == true then 
+    if loseGame == true then 
         deathScreenAnim:draw(deathScreen, 0, 0)
     end
 
@@ -202,19 +203,25 @@ end
 
 function collitionWithFirstCar()
     if chickenX + 50 >= firstCarX + pathCorrection and chickenX <= firstCarX + 140 and chickenY + 40 >= firstCarY and chickenY <= firstCarY + 140 then 
-        testColliding = true
+        isColliding = true
+        isGameRunning = false
+        loseGame = true
     end
 end
 
 function collitionWithSecondCar()
     if chickenX + 50 >= secondCarX + pathCorrection and chickenX <= secondCarX + 140 and chickenY + 40 >= secondCarY and chickenY <= secondCarY + 140 then 
-        testColliding = true
+        isColliding = true
+        isGameRunning = false
+        loseGame = true
     end
 end
 
 function collitionWithThirdCar()
     if chickenX + 50 >= thirdCarX + pathCorrection and chickenX <= thirdCarX + 140 and chickenY + 40 >= thirdCarY and chickenY <= thirdCarY + 140 then 
-        testColliding = true
+        isColliding = true
+        isGameRunning = false
+        loseGame = true
     end
 end
 
@@ -227,6 +234,6 @@ end
 
 function winCondition()
     if score > 750 then
-        love.graphics.rectangle("fill", screenWidth / 3, screenHeight / 3, 100, 100)
+        
     end
 end
