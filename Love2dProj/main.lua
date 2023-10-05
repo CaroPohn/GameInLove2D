@@ -18,6 +18,7 @@ function love.load()
     chicken = love.graphics.newImage("pollito.png")
     road = love.graphics.newImage("road2less.png")
     deathScreen = love.graphics.newImage("deathanimcar2.png")
+    winScreen = love.graphics.newImage("winanimation.png")
 
     -- Setear la ventana
     love.window.setMode(1150, 720)
@@ -71,6 +72,9 @@ function love.load()
 
     deathScreenGrid = anim8.newGrid(1150, 720, deathScreen:getWidth(), deathScreen:getHeight())
     deathScreenAnim = anim8.newAnimation(deathScreenGrid("1-13", 1), 0.1 )
+
+    winScreenGrid = anim8.newGrid(1150, 720, winScreen:getWidth(), winScreen:getHeight())
+    winScreenAnim = anim8.newAnimation(winScreenGrid("1-12", 1), 0.1 )
 
 end
 
@@ -150,6 +154,10 @@ function love.update(dt)
     if loseGame == true then
         deathScreenAnim:update(dt)
     end
+
+    if winGame == true then
+        winScreenAnim:update(dt)
+    end
 end
 
 function love.draw()
@@ -162,6 +170,10 @@ function love.draw()
 
     if loseGame == true then 
         deathScreenAnim:draw(deathScreen, 0, 0)
+    end
+
+    if winGame == true then
+        winScreenAnim:draw(winScreen, 0, 0)
     end
 
     love.graphics.print(score, 25, 25)
@@ -234,6 +246,6 @@ end
 
 function winCondition()
     if score > 750 then
-        
+        winGame = true    
     end
 end
