@@ -1,3 +1,5 @@
+local font = love.graphics.newFont("Monocraft.ttf")
+
 function love.load()
     anim8 = require "anim8"
     love.graphics.setDefaultFilter("nearest", "nearest")
@@ -8,9 +10,10 @@ function love.load()
     scoreTimer = 0
     score = 0
 
-    isGameRunning = true
+    isGameRunning = false
     loseGame = false
     winGame = false
+    isMenu = true
 
     -- Semilla para el random
     math.randomseed(os.time())
@@ -19,6 +22,7 @@ function love.load()
     road = love.graphics.newImage("road2less.png")
     deathScreen = love.graphics.newImage("deathanimcar2.png")
     winScreen = love.graphics.newImage("winanimation.png")
+    menuScreen = love.graphics.newImage("menusprite.png")
 
     -- Setear la ventana
     love.window.setMode(1150, 720)
@@ -83,73 +87,75 @@ function love.update(dt)
 
     pathCorrection = 15
     
-    firstCarX = firstCarX - firstCarSpeed * dt
-    secondCarX = secondCarX - secondCarSpeed * dt
-    thirdCarX = thirdCarX - thirdCarSpeed * dt
-    firstCarTime = firstCarTime + love.timer.getDelta() 
-    secondCarTime = secondCarTime + love.timer.getDelta() 
-    thirdCarTime = thirdCarTime + love.timer.getDelta() 
-    scoreTimer = scoreTimer + love.timer.getDelta()
+    if isGameRunning == true then
+        firstCarX = firstCarX - firstCarSpeed * dt
+        secondCarX = secondCarX - secondCarSpeed * dt
+        thirdCarX = thirdCarX - thirdCarSpeed * dt
+        firstCarTime = firstCarTime + love.timer.getDelta() 
+        secondCarTime = secondCarTime + love.timer.getDelta() 
+        thirdCarTime = thirdCarTime + love.timer.getDelta() 
+        scoreTimer = scoreTimer + love.timer.getDelta()
 
-    if firstCarTime > 2 then
-        firstCarRandPos = math.random(3)
+        if firstCarTime > 2 then
+            firstCarRandPos = math.random(3)
 
-        if firstCarRandPos == 1 then
-            firstCarY = firstPath - pathCorrection
+            if firstCarRandPos == 1 then
+                firstCarY = firstPath - pathCorrection
 
-        elseif firstCarRandPos == 2 then
-            firstCarY = secondPath
+            elseif firstCarRandPos == 2 then
+                firstCarY = secondPath
 
-        elseif firstCarRandPos == 3 then
-        firstCarY = thirdPath - pathCorrection
+            elseif firstCarRandPos == 3 then
+            firstCarY = thirdPath - pathCorrection
 
-        end   
-        resetFirstCar()
-    end
-
-    if secondCarTime > 3 then
-        secondCarXCarRandPos = math.random(3)
-
-        if secondCarXCarRandPos == 1 then
-            secondCarY = firstPath - pathCorrection
-
-        elseif secondCarXCarRandPos == 2 then
-            secondCarY = secondPath
-
-        elseif secondCarXCarRandPos == 3 then
-            secondCarY = thirdPath - pathCorrection
+            end   
+            resetFirstCar()
         end
 
-        resetSecondCar()
-    end
+        if secondCarTime > 3 then
+            secondCarXCarRandPos = math.random(3)
 
-    if thirdCarTime > 5 then
-        thirdCarRandPos = math.random(3)
+            if secondCarXCarRandPos == 1 then
+                secondCarY = firstPath - pathCorrection
 
-        if thirdCarRandPos == 1 then
-            thirdCarY = firstPath - pathCorrection
+            elseif secondCarXCarRandPos == 2 then
+                secondCarY = secondPath
 
-        elseif thirdCarRandPos == 2 then
-            thirdCarY = secondPath
+            elseif secondCarXCarRandPos == 3 then
+                secondCarY = thirdPath - pathCorrection
+            end
 
-        elseif thirdCarRandPos == 3 then
-            thirdCarY = thirdPath - pathCorrection
+            resetSecondCar()
         end
 
-        resetThirdCar()
+        if thirdCarTime > 5 then
+            thirdCarRandPos = math.random(3)
+
+            if thirdCarRandPos == 1 then
+                thirdCarY = firstPath - pathCorrection
+
+            elseif thirdCarRandPos == 2 then
+                thirdCarY = secondPath
+
+            elseif thirdCarRandPos == 3 then
+                thirdCarY = thirdPath - pathCorrection
+            end
+
+            resetThirdCar()
+        end
+
+        roadAnimation:update(dt)
+        chickenAnimation:update(dt)
+        firstCarAnimation:update(dt)
+        secondCarAnimation:update(dt)
+        thirdCarAnimation:update(dt)
+            
+        collitionWithFirstCar()
+        collitionWithSecondCar()
+        collitionWithThirdCar()
+
+        scoreCounter()
     end
-
-    roadAnimation:update(dt)
-    chickenAnimation:update(dt)
-    firstCarAnimation:update(dt)
-    secondCarAnimation:update(dt)
-    thirdCarAnimation:update(dt)
-        
-    collitionWithFirstCar()
-    collitionWithSecondCar()
-    collitionWithThirdCar()
-
-    scoreCounter()
    
     if loseGame == true then
         deathScreenAnim:update(dt)
@@ -162,23 +168,35 @@ end
 
 function love.draw()
     -- Animations
-    roadAnimation:draw(road, 0, 0)
-    chickenAnimation:draw(chicken, chickenX, chickenY, nil, 2.5)
-    firstCarAnimation:draw(firstCarTexture, firstCarX, firstCarY)
-    secondCarAnimation:draw(secondCarTexture, secondCarX, secondCarY)
-    thirdCarAnimation:draw(thirdCarTexture, thirdCarX, thirdCarY)
+    if isMenu == true then
+        love.graphics.draw(menuScreen)
+    end
 
     if loseGame == true then 
         deathScreenAnim:draw(deathScreen, 0, 0)
+        love.graphics.setColor(0, 0, 0, 1)
+        love.graphics.print("R TO RESTART", font, 525, 650, 0, 1.5, 1.5)
+        love.graphics.setColor(1, 1, 1, 1)
     end
 
     if winGame == true then
         winScreenAnim:draw(winScreen, 0, 0)
+        love.graphics.setColor(0, 0, 0, 1)
+        love.graphics.print("R TO RESTART", font, 525, 650, 0, 1.5, 1.5)
+        love.graphics.setColor(1, 1, 1, 1)
     end
 
-    if loseGame == false and winGame == false then  
+    if isGameRunning == true then  
+        roadAnimation:draw(road, 0, 0)
+        chickenAnimation:draw(chicken, chickenX, chickenY, nil, 2.5)
+        firstCarAnimation:draw(firstCarTexture, firstCarX, firstCarY)
+        secondCarAnimation:draw(secondCarTexture, secondCarX, secondCarY)
+        thirdCarAnimation:draw(thirdCarTexture, thirdCarX, thirdCarY)
         love.graphics.print(score, 25, 25, 0, 4, 4)
-        love.graphics.print("Ignacio G. - Carolina P. - Santiago S.", 400, 650, 0, 1.5, 1.5)
+        love.graphics.setColor(0, 0, 0, 1)
+        love.graphics.print("Ignacio G. - Carolina P. - Santiago S.", font, 400, 650, 0, 1.5, 1.5)
+        love.graphics.print("W = UP - S = DOWN - R = RESTART", font, 450, 675, 0, 1.5, 1.5)
+        love.graphics.setColor(1, 1, 1, 1)  
     end
 
     winCondition()
@@ -204,11 +222,16 @@ function love.keypressed(key)
         isGameRunning = true
         loseGame = false
         winGame = false
+        isMenu = false
         score = 0
         firstCarTime = 0
         secondCarTime = 0
         thirdCarTime = 0
+        firstCarX = screenWidth
+        secondCarX = screenWidth
+        thirdCarX = screenWidth
     end
+
 end
 
 function resetFirstCar()
@@ -258,7 +281,8 @@ function scoreCounter()
 end
 
 function winCondition()
-    if score > 750 then
+    if score >= 500 then
         winGame = true    
+        isGameRunning = false
     end
 end
