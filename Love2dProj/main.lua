@@ -199,6 +199,16 @@ function love.keypressed(key)
     if chickenY < firstPath then
         chickenY = thirdPath
     end
+
+    if key == "r" or key == "R" then 
+        isGameRunning = true
+        loseGame = false
+        winGame = false
+        score = 0
+        firstCarTime = 0
+        secondCarTime = 0
+        thirdCarTime = 0
+    end
 end
 
 function resetFirstCar()
