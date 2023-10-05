@@ -176,7 +176,10 @@ function love.draw()
         winScreenAnim:draw(winScreen, 0, 0)
     end
 
-    love.graphics.print(score, 25, 25)
+    if loseGame == false and winGame == false then  
+        love.graphics.print(score, 25, 25, 0, 4, 4)
+        love.graphics.print("Ignacio G. - Carolina P. - Santiago S.", 400, 650, 0, 1.5, 1.5)
+    end
 
     winCondition()
 end
